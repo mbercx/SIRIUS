@@ -55,3 +55,19 @@ jobs:
           cmake ../ -DCMAKE_BUILD_TYPE=DEBUG -DSpFFT_DIR=$HOME/local/lib/cmake/SpFFT -DCMAKE_INSTALL_PREFIX=$HOME/local -DBUILD_TESTS=1 -DUSE_ROCM=1
           make -j 2 install
 
+  build_cuda:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cuda: ['stabbles/sirius-cuda-10', 'stabbles/sirius-cuda-11']
+    container: ${{ matrix.cuda }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup spack
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          rm -rf /user_repo/spack && cp -r ./spack /user_repo/
+          spack --color always repo list
+          spack --color always spec -I sirius@develop +cuda ^openblas threads=openmp ^mpich
+      - name: Build SIRIUS
+        run: spack --color always dev-build --source-path ${GITHUB_WORKSPACE} sirius@develop +cuda ^openblas threads=openmp ^mpich
