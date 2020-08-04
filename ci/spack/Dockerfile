@@ -1,5 +1,4 @@
 ARG BASE_IMAGE=nvidia/cuda:10.2-devel-ubuntu18.04
-ARG SPEC=sirius@develop +cuda ^openblas threads=openmp ^mpich
 
 FROM $BASE_IMAGE
 
@@ -70,7 +69,7 @@ RUN spack mirror add --scope system minio http://148.187.98.133:9000/spack && \
 # Install dependencies and strip things immediately
 # NOTE: this means packages will be stripped in the binary cache...
 RUN spack env create ci && \
-    spack -e ci install --only=dependencies "$SPEC" && \
+    spack -e ci install --only=dependencies sirius@develop +cuda ^openblas threads=openmp ^mpich && \
     rm -rf /tmp/* && \
     (find /opt/spack/opt/spack -type f | \
      xargs file -i | \
