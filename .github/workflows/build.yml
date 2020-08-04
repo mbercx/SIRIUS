@@ -55,19 +55,22 @@ jobs:
           cmake ../ -DCMAKE_BUILD_TYPE=DEBUG -DSpFFT_DIR=$HOME/local/lib/cmake/SpFFT -DCMAKE_INSTALL_PREFIX=$HOME/local -DBUILD_TESTS=1 -DUSE_ROCM=1
           make -j 2 install
 
-  build_cuda:
+  build cuda 10:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        cuda: ['stabbles/sirius-cuda-10', 'stabbles/sirius-cuda-11']
-    container: ${{ matrix.cuda }}
+    container: stabbles/sirius-cuda-10
     steps:
       - uses: actions/checkout@v2
-      - name: Setup spack
-        run: |
-          cd ${GITHUB_WORKSPACE}
-          rm -rf /user_repo/spack && cp -r ./spack /user_repo/
-          spack --color always repo list
-          spack --color always spec -I sirius@develop +cuda ^openblas threads=openmp ^mpich
+      - name: Setup Spack
+        run: rm -rf /user_repo/spack && cp -r ./spack /user_repo/
       - name: Build SIRIUS
-        run: spack --color always dev-build --source-path ${GITHUB_WORKSPACE} sirius@develop +cuda ^openblas threads=openmp ^mpich
+        run: spack --color always dev-build --source-path ${GITHUB_WORKSPACE} sirius@develop %gcc@7.5.0 build_type=RelWithDebInfo +cuda ^cuda@:10 ^openblas threads=openmp ^mpich
+
+  build cuda 11:
+    runs-on: ubuntu-latest
+    container: stabbles/sirius-cuda-11
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Spack
+        run: rm -rf /user_repo/spack && cp -r ./spack /user_repo/
+      - name: Build SIRIUS
+        run: spack --color always dev-build --source-path ${GITHUB_WORKSPACE} sirius@develop %gcc@9.3.0 build_type=RelWithDebInfo +cuda ^cuda@:11 ^openblas threads=openmp ^mpich
