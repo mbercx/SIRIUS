@@ -1,0 +1,4 @@
+spack:
+  specs:
+  - sirius@develop %gcc@7.5.0 +cuda ^cuda@:10 ^openblas threads=openmp ^mpich
+  view: false
