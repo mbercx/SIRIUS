@@ -55,7 +55,7 @@ jobs:
           cmake ../ -DCMAKE_BUILD_TYPE=DEBUG -DSpFFT_DIR=$HOME/local/lib/cmake/SpFFT -DCMAKE_INSTALL_PREFIX=$HOME/local -DBUILD_TESTS=1 -DUSE_ROCM=1
           make -j 2 install
 
-  build cuda 10:
+  build_cuda_10:
     runs-on: ubuntu-latest
     container: stabbles/sirius-cuda-10
     steps:
@@ -65,7 +65,7 @@ jobs:
       - name: Build SIRIUS
         run: spack --color always dev-build --source-path ${GITHUB_WORKSPACE} sirius@develop %gcc@7.5.0 build_type=RelWithDebInfo +cuda ^cuda@:10 ^openblas threads=openmp ^mpich
 
-  build cuda 11:
+  build_cuda_11:
     runs-on: ubuntu-latest
     container: stabbles/sirius-cuda-11
     steps:
