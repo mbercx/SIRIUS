@@ -56,7 +56,8 @@ RUN spack repo add --scope system /user_repo
 
 # Set up the binary cache and trust the public part of our signing key
 COPY ./ci/spack/public_key.asc ./public_key.asc
-RUN spack mirror add --scope system minio http://148.187.98.133:9000/spack && \
+# RUN spack mirror add --scope system minio http://148.187.98.133:9000/spack && \
+RUN spack mirror add --scope system spack-cscs https://spack-cscs.s3.eu-central-1.amazonaws.com/ && \
     spack gpg trust ./public_key.asc
 
 # Copy over the environment file
@@ -69,7 +70,7 @@ COPY $SPACK_ENVIRONMENT /spack_environment/spack.yaml
 #
 # !! NOTE: this means packages will be stripped in the binary cache...
 RUN spack --color=always env create --without-view ci /spack_environment/spack.yaml && \
-    spack --color=always --debug -e ci install --use-cache --only=dependencies && \
+    spack --color=always -e ci install --use-cache --only=dependencies && \
     rm -rf /tmp/* && \
     (find /opt/spack/opt/spack -type f | \
      xargs file -i | \
