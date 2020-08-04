@@ -54,22 +54,6 @@ COPY ./spack /user_repo
 
 RUN spack repo add --scope system /user_repo
 
-# Pre-install CUDA and cmake
-RUN (echo "packages:" \
-&&   echo "  all:" \
-&&   echo "    target: [x86_64]" \
-&&   echo "    variants:" \
-&&   echo "      - 'build_type=Release'" \
-&&   echo "      - '+release'" \
-&&   echo "  cuda:" \
-&&   echo "    paths:" \
-&&   echo "      cuda: /usr/local/cuda" \
-&&   echo "    buildable: False" \
-&&   echo "  cmake:" \
-&&   echo "    paths:" \
-&&   echo "      cmake: /usr/local/cmake" \
-&&   echo "    buildable: False") > /opt/spack/etc/spack/packages.yaml
-
 # Set up the binary cache and trust the public part of our signing key
 COPY ./ci/spack/public_key.asc ./public_key.asc
 RUN spack mirror add --scope system minio http://148.187.98.133:9000/spack && \

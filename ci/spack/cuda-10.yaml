@@ -1,4 +1,20 @@
 spack:
   specs:
-  - sirius@develop %gcc@7.5.0 +cuda ^cuda@:10 ^openblas threads=openmp ^mpich
+    - sirius@develop %gcc@7.5.0 build_type=RelWithDebInfo +cuda ^cuda@:10 ^openblas threads=openmp ^mpich
   view: false
+
+  packages:
+    packages:
+      all:
+        target: [x86_64]
+        variants:
+          - 'build_type=Release'
+          - '+release'
+      cuda:
+        paths:
+          'cuda@:10': /usr/local/cuda
+        buildable: False
+      cmake:
+        paths:
+          cmake: /usr/local/cmake
+        buildable: False
