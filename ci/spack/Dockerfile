@@ -68,8 +68,8 @@ COPY $SPACK_ENVIRONMENT /spack_environment/spack.yaml
 # 3. Strip the binaries
 #
 # !! NOTE: this means packages will be stripped in the binary cache...
-RUN spack env create --without-view ci /spack_environment/spack.yaml && \
-    spack -e ci install --only=dependencies && \
+RUN spack --color=always env create --without-view ci /spack_environment/spack.yaml && \
+    spack --color=always --debug -e ci install --use-cache --only=dependencies && \
     rm -rf /tmp/* && \
     (find /opt/spack/opt/spack -type f | \
      xargs file -i | \
