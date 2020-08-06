@@ -74,3 +74,23 @@ jobs:
         run: rm -rf /user_repo/spack && cp -r ${GITHUB_WORKSPACE}/spack /user_repo/
       - name: Build SIRIUS
         run: spack --color always -e ci dev-build --source-path ${GITHUB_WORKSPACE} sirius@develop %gcc@9.3.0 build_type=RelWithDebInfo +cuda ^cuda@:11 ^openblas threads=openmp ^mpich
+
+  build_elpa_mpich:
+    runs-on: ubuntu-latest
+    container: stabbles/sirius-cpu
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Spack
+        run: rm -rf /user_repo/spack && cp -r ${GITHUB_WORKSPACE}/spack /user_repo/
+      - name: Build SIRIUS
+        run: spack --color always -e ci dev-build --source-path ${GITHUB_WORKSPACE} sirius@develop %gcc@9.3.0 build_type=RelWithDebInfo +cuda ^cuda@:11 ^openblas threads=openmp ^mpich
+
+  build_openmpi:
+    runs-on: ubuntu-latest
+    container: stabbles/sirius-cpu
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Spack
+        run: rm -rf /user_repo/spack && cp -r ${GITHUB_WORKSPACE}/spack /user_repo/
+      - name: Build SIRIUS
+        run: spack --color always -e ci dev-build --source-path ${GITHUB_WORKSPACE} sirius@develop %gcc@9.3.0 build_type=RelWithDebInfo +cuda ^cuda@:11 ^openblas threads=openmp ^mpich
