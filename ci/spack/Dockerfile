@@ -45,9 +45,13 @@ RUN apt-get -yqq update \
 RUN mkdir -p /usr/local/cmake && \
     curl -Ls https://github.com/Kitware/CMake/releases/download/v3.18.0/cmake-3.18.0-Linux-x86_64.tar.gz | tar --strip-components=1 -xz -C /usr/local/cmake
 
-# We need a patched spack for now to work around environment issues
-RUN git clone -b do-not-fail-on-missing-spec --depth 1 https://github.com/haampie/spack.git /opt/spack && \
-    rm -rf /opt/spack/.git
+
+# This is the spack version we want to have
+ARG SPACK_SHA
+ENV SPACK_SHA=$SPACK_SHA
+
+# Install the specific ref of Spack provided by the user
+RUN curl -Ls "https://api.github.com/repos/spack/spack/tarball/$SPACK_SHA" | tar --strip-components=1 -xz -C /opt/spack
 
 # Add our custom spack repo from here
 COPY ./spack /user_repo
