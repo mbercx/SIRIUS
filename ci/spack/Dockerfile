@@ -21,7 +21,6 @@ RUN apt-get -yqq update \
         build-essential \
         ca-certificates \
         curl \
-        cmake \
         file \
         g++ \
         gcc \
@@ -33,6 +32,7 @@ RUN apt-get -yqq update \
         locales \
         lua-posix \
         make \
+        parallel \
         python3 \
         python3-pip \
         python3-setuptools \
@@ -70,14 +70,11 @@ COPY $SPACK_ENVIRONMENT /spack_environment/spack.yaml
 # Build dependencies
 # 1. Create a spack environment named `ci` from the input spack.yaml file
 # 2. Install only the dependencies of this (top level is our package)
-# 3. Strip the binaries
 #
 # !! NOTE: this means packages will be stripped in the binary cache...
-RUN spack --color=always env create --without-view ci /spack_environment/spack.yaml && \
-    spack --color=always -e ci install --use-cache --only=dependencies && \
-    rm -rf /tmp/* && \
-    (find /opt/spack/opt/spack -type f | \
-     xargs file -i | \
-     grep 'charset=binary' | \
-     grep 'x-executable\|x-archive\|x-sharedlib' | \
-     awk -F: '{print $1}' | xargs strip -s) || true
+RUN spack --color=always env create --without-view ci /spack_environment/spack.yaml
+
+# Just run 4 concurrent spack install's to make things a hair faster, we're doing
+# many single-threaded things most of the time (downloading, configuring...)
+# Please don't ask me about --will-cite.
+RUN parallel --will-cite -N0 spack --color=always -e ci install --only=dependencies ::: {1..4}
