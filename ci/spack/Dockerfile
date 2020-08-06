@@ -70,11 +70,6 @@ COPY $SPACK_ENVIRONMENT /spack_environment/spack.yaml
 # Build dependencies
 # 1. Create a spack environment named `ci` from the input spack.yaml file
 # 2. Install only the dependencies of this (top level is our package)
-#
-# !! NOTE: this means packages will be stripped in the binary cache...
 RUN spack --color=always env create --without-view ci /spack_environment/spack.yaml
 
-# Just run 4 concurrent spack install's to make things a hair faster, we're doing
-# many single-threaded things most of the time (downloading, configuring...)
-# Please don't ask me about --will-cite.
-RUN parallel --will-cite -N0 spack --color=always -e ci install --only=dependencies ::: {1..4}
+RUN spack --color=always -e ci install --only=dependencies
