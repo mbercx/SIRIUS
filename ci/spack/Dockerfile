@@ -51,7 +51,8 @@ ARG SPACK_SHA
 ENV SPACK_SHA=$SPACK_SHA
 
 # Install the specific ref of Spack provided by the user
-RUN curl -Ls "https://api.github.com/repos/spack/spack/tarball/$SPACK_SHA" | tar --strip-components=1 -xz -C /opt/spack
+RUN mkdir -p /opt/spack && \
+    curl -Ls "https://api.github.com/repos/spack/spack/tarball/$SPACK_SHA" | tar --strip-components=1 -xz -C /opt/spack
 
 # Add our custom spack repo from here
 COPY ./spack /user_repo
