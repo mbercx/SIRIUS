@@ -10,10 +10,12 @@ spack:
         - 'build_type=Release'
         - '+release'
     cuda:
-      paths:
-        'cuda@:10': /usr/local/cuda
       buildable: False
+      externals:
+      - spec: 'cuda@:10'
+        prefix: /usr/local/cuda
     cmake:
-      paths:
-        cmake: /usr/local/cmake
       buildable: False
+      externals:
+      - spec: 'cmake'
+        prefix: /usr/local/cmake

@@ -11,6 +11,7 @@ spack:
         - 'build_type=Release'
         - '+release'
     cmake:
-      paths:
-        cmake: /usr/local/cmake
       buildable: False
+      externals:
+      - spec: 'cmake'
+        prefix: /usr/local/cmake
